@@ -1,5 +1,5 @@
 FROM ubuntu:trusty
-MAINTAINER Kaito Udagawa <umiiro.hacker@gmail.com>
+MAINTAINER Kaito Udagawa <umireon@gmail.com>
 
 # basic setup
 RUN apt-get -y update; apt-get -y upgrade; apt-get -y install software-properties-common wget; apt-get -y clean; rm -rf /var/lib/apt/lists/*
@@ -26,3 +26,4 @@ RUN chmod 0755 /run.sh
 VOLUME /var/www/html/owncloud/config
 CMD /run.sh
 EXPOSE 80
+
