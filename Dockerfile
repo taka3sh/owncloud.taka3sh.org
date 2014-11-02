@@ -2,7 +2,7 @@ FROM ubuntu:trusty
 MAINTAINER Kaito Udagawa <umiiro.hacker@gmail.com>
 
 # basic setup
-RUN sed -ie s!/a!/jp.a! /etc/apt/sources.list; apt-get -y update; apt-get -y upgrade; apt-get -y install software-properties-common wget; apt-get -y clean; rm -rf /var/lib/apt/lists/*
+RUN apt-get -y update; apt-get -y upgrade; apt-get -y install software-properties-common wget; apt-get -y clean; rm -rf /var/lib/apt/lists/*
 
 # install salt-minion
 RUN add-apt-repository ppa:saltstack/salt; apt-get -y update; apt-get -y install salt-minion; apt-get -y clean; rm -rf /var/lib/apt/lists/*
