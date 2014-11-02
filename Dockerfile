@@ -1,33 +1,28 @@
 FROM ubuntu:trusty
 MAINTAINER Kaito Udagawa <umiiro.hacker@gmail.com>
 
-# Set up Ubuntu Image
-RUN sed -ie s!/a!/jp.a! /etc/apt/sources.list
-RUN apt-get -y update
-RUN apt-get -y upgrade
+# basic setup
+RUN sed -ie s!/a!/jp.a! /etc/apt/sources.list; apt-get -y update; apt-get -y upgrade; apt-get -y install software-properties-common wget; apt-get -y clean; rm -rf /var/lib/apt/lists/*
 
-# Basic Packages
-RUN apt-get -y install openssh-server wget
+# install salt-minion
+RUN add-apt-repository ppa:saltstack/salt; apt-get -y update; apt-get -y install salt-minion; apt-get -y clean; rm -rf /var/lib/apt/lists/*
 
-# Deploy owncloud
-RUN apt-get -y install apache2
-RUN wget -q -O - https://download.owncloud.org/community/owncloud-7.0.2.tar.bz2 | tar xjf - -C /var/www/html
+# install owncloud dependencies
+RUN apt-get -y update; apt-get -y install apache2 libapache2-mod-php5 php5-gd php5-curl php5-pgsql; apt-get -y clean; rm -rf /var/lib/apt/lists/*
 
-# Install Requirements
-RUN apt-get -y install libapache2-mod-php5
-RUN apt-get -y install php5-gd php5-curl
-RUN apt-get -y install php5-pgsql
-RUN a2enmod rewrite
+# install owncloud distribution
+RUN wget -q -O - https://download.owncloud.org/community/owncloud-7.0.2.tar.bz2 | tar xjvf - -C /var/www/html
 
-# Application Settings
-ADD 000-default.conf /etc/apache2/sites-available/
+# setup application
 RUN mkdir /var/www/html/owncloud/data
 RUN chown www-data:www-data /var/www/html/owncloud/data
-ADD run.sh /
-ADD run_sshd.sh /
-RUN chmod 0755 /*.sh
 
-# Image Settings
+COPY 000-default.conf /etc/apache2/sites-available/
+
+COPY run.sh /
+RUN chmod 0755 /run.sh
+
+# image setting
 VOLUME /var/www/html/owncloud/config
 CMD /run.sh
 EXPOSE 80
